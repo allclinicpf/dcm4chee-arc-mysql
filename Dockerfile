@@ -24,7 +24,7 @@ RUN set -eux \
 COPY setenv.sh /
 COPY --chown=wildfly:wildfly configuration /docker-entrypoint.d/configuration
 
-# Default configuration: can be overridden at the docker command line
+# Default configuration: can be overridden at the docker  command line
 ENV LDAP_URL=ldap://ldap:389 \
     LDAP_BASE_DN=dc=dcm4che,dc=org \
     KEYSTORE=/opt/wildfly/standalone/configuration/keystores/key.p12 \

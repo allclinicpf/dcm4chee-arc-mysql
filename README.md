@@ -12,7 +12,7 @@ See [Running on Docker](https://github.com/dcm4che/dcm4chee-arc-light/wiki/Runni
 ## Environment Variables
 
 Below explained environment variables can be set as per one's application to override the default values if need be.
-An example of how one can set an env variable in `docker run` command is shown below :
+An example of how one can set an env variable in `docker run` command is shown below:
 
     -e ARCHIVE_DEVICE_NAME=my-dcm4chee-arc
 

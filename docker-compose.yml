@@ -44,7 +44,7 @@ services:
       fi;
       curl -fsSL https://allclinic.com.br/dcm4che/5.34.3/create-mysql.sql -o /tmp/create-mysql.sql;
       mariadb -h db -u root -p"$$MARIADB_ROOT_PASSWORD" < /tmp/create-mysql.sql;
-      echo "SQL remoto aplicado com sucesso.";
+      echo "SQL remoto aplicado com sucesso .";
   arc:
     image: dcm4che/dcm4chee-arc-mysql:5.34.3
     ports:
