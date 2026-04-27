@@ -23,8 +23,8 @@ file_env() {
 }
 
 file_env 'LDAP_ROOTPASS' 'secret'
-file_env 'POSTGRES_USER' 'pacs'
-file_env 'POSTGRES_PASSWORD' 'pacs'
+file_env 'MYSQL_USER' 'pacs'
+file_env 'MYSQL_PASSWORD' 'pacs'
 file_env 'KEYSTORE_PASSWORD' 'secret'
 file_env 'KEY_PASSWORD' "${KEYSTORE_PASSWORD}"
 file_env 'TRUSTSTORE_PASSWORD' 'changeit'
@@ -32,11 +32,11 @@ file_env 'EXTRA_CACERTS_PASSWORD' 'secret'
 file_env 'WILDFLY_ADMIN_USER'
 file_env 'WILDFLY_ADMIN_PASSWORD'
 
-# Append '?' in the beginning of the string if POSTGRES_JDBC_PARAMS value isn't empty
-POSTGRES_JDBC_PARAMS=$(echo ${POSTGRES_JDBC_PARAMS} | sed '/^$/! s/^/?/')
+# Append '?' in the beginning of the string if MYSQL_JDBC_PARAMS value isn't empty
+MYSQL_JDBC_PARAMS=$(echo ${MYSQL_JDBC_PARAMS} | sed '/^$/! s/^/?/')
 
 if [ "$WILDFLY_DEPLOY_UI" = 'false' ]; then
-	WILDFLY_DEPLOYMENTS="dcm4chee-arc-ear-${DCM4CHEE_ARC_VERSION}-psql.ear"
+	WILDFLY_DEPLOYMENTS="dcm4chee-arc-ear-${DCM4CHEE_ARC_VERSION}.ear"
 elif [ "$WILDFLY_DEPLOY_UI" = 'only' ]; then
 	UI="-ui"
 	WILDFLY_DEPLOYMENTS="dcm4chee-arc-ui2-${DCM4CHEE_ARC_VERSION}.war"

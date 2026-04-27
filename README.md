@@ -1,8 +1,8 @@
 # Supported tags and respective `Dockerfile` links
 
-- [`5.34.3` (*5.34.3/Dockerfile*)](https://github.com/dcm4che-dockerfiles/dcm4chee-arc-psql/blob/5.34.3/Dockerfile)
-- [`5.34.3-secure` (*5.34.3-secure/Dockerfile*)](https://github.com/dcm4che-dockerfiles/dcm4chee-arc-psql/blob/5.34.3-secure/Dockerfile)
-- [`5.34.3-secure-ui` (*5.34.3-secure-ui/Dockerfile*)](https://github.com/dcm4che-dockerfiles/dcm4chee-arc-psql/blob/5.34.3-secure-ui/Dockerfile)
+- [`5.34.3`](Dockerfile)
+- [`5.34.3-secure`](Dockerfile)
+- [`5.34.3-secure-ui`](Dockerfile)
 
 ## How to use this image
 
@@ -16,7 +16,7 @@ An example of how one can set an env variable in `docker run` command is shown b
 
     -e ARCHIVE_DEVICE_NAME=my-dcm4chee-arc
 
-_**Note**_ : If default values of any environment variables were overridden in startup of `slapd` or `postgres` containers, 
+_**Note**_ : If default values of any environment variables were overridden in startup of `slapd` or `mariadb` containers, 
 then ensure that the same values are also used for overriding the defaults during startup of archive container. 
 
 #### `LDAP_URL`
@@ -49,38 +49,38 @@ Device name to lookup in LDAP for Audit Logging configuration (optional, default
 Space separated list of URL(s) of Archive RESTful services deployed in this and other Archive docker container(s).
 E.g.: `http://dcm4chee-arc-1:8080/dcm4chee-arc http://dcm4chee-arc-2:8080/dcm4chee-arc` (optional, default is `/dcm4chee-arc`).
 
-#### `POSTGRES_HOST`
+#### `MYSQL_HOST`
 
-Hostname/IP-Address of the PostgreSQL host. Required for using external PostgreSQL database to persist data.
+Hostname/IP-Address of the MariaDB host. Required for using external MariaDB database to persist data.
 If absent, embedded Java-based relational database H2 will be used to persist data (optional, default is `db`).
 
-#### `POSTGRES_PORT`
+#### `MYSQL_PORT`
              
-Port of the PostgreSQL host (optional, default is `5432`)
+Port of the MariaDB host (optional, default is `3306`)
 
-#### `POSTGRES_DB`
+#### `MYSQL_DB`
                  
 Name of the database to use (optional, default is `pacsdb`).
 
-#### `POSTGRES_USER`
+#### `MYSQL_USER`
              
-User to authenticate to PostgreSQL (optional, default is `pacs`).
+User to authenticate to MariaDB (optional, default is `pacs`).
 
-#### `POSTGRES_USER_FILE`
+#### `MYSQL_USER_FILE`
                   
-User to authenticate to PostgreSQL via file input (alternative to `POSTGRES_USER`).
+User to authenticate to MariaDB via file input (alternative to `MYSQL_USER`).
 
-#### `POSTGRES_PASSWORD`
+#### `MYSQL_PASSWORD`
 
-User's password to use to authenticate to PostgreSQL (optional, default is `pacs`).
+User's password to use to authenticate to MariaDB (optional, default is `pacs`).
 
-#### `POSTGRES_PASSWORD_FILE`
+#### `MYSQL_PASSWORD_FILE`
                       
-User's password to use to authenticate to PostgreSQL via file input (alternative to `DB_PASSWORD`).
+User's password to use to authenticate to MariaDB via file input (alternative to `DB_PASSWORD`).
 
-#### `POSTGRES_JDBC_PARAMS`
+#### `MYSQL_JDBC_PARAMS`
                       
-Optional JDBC [Connection Parameters](https://jdbc.postgresql.org/documentation/head/connect.html) (e.g.: `connectTimeout=30`).
+Optional JDBC [Connection Parameters](https://mariadb.com/kb/en/about-mariadb-connector-j/) (e.g.: `connectTimeout=30000`).
 
 #### `JBOSS_JAVA_SIZING`
 
@@ -133,7 +133,7 @@ get owned by the user and group of the Wildfly process by default, without the n
 
 #### `WILDFLY_WAIT_FOR`
 
-Indicates to delay the start of the archive until specified TCP ports become accessible. Format: `<host>:<port> ...`, e.g.: `ldap:389 db:5432`.
+Indicates to delay the start of the archive until specified TCP ports become accessible. Format: `<host>:<port> ...`, e.g.: `ldap:389 db:3306`.
 
 #### `WILDFLY_START_DELAY`
 
@@ -455,14 +455,14 @@ Dockerfile  weasis-pacs-connector.war
 ```
 ```console
 $ cat Dockerfile
-FROM dcm4che/dcm4chee-arc-psql:5.34.3
+FROM dcm4che/dcm4chee-arc-mysql:5.34.3
 COPY weasis-pacs-connector.war /docker-entrypoint.d/deployments
 ```
 ```console
-$ docker build -t dcm4chee-arc-psql-with-weasis-pacs-connector:5.34.3 .
+$ docker build -t dcm4chee-arc-mysql-with-weasis-pacs-connector:5.34.3 .
 Sending build context to Docker daemon  1.924MB
-Step 1/2 : FROM dcm4che/dcm4chee-arc-psql:5.34.3
-5.34.3: Pulling from dcm4che/dcm4chee-arc-psql
+Step 1/2 : FROM dcm4che/dcm4chee-arc-mysql:5.34.3
+5.34.3: Pulling from dcm4che/dcm4chee-arc-mysql
 c7b7d16361e0: Already exists
 b7a128769df1: Already exists
 1128949d0793: Already exists
@@ -478,10 +478,10 @@ b04b5d1d48ca: Already exists
 01e5664d91d6: Pull complete
 22267eaaa65e: Pull complete
 Digest: sha256:efd76ca282504bc3e7284cc544434dd769a84b45af5f96ff84ed462a6425780d
-Status: Downloaded newer image for dcm4che/dcm4chee-arc-psql:5.34.3
+Status: Downloaded newer image for dcm4che/dcm4chee-arc-mysql:5.34.3
  ---> c84231dce4d2
 Step 2/2 : COPY weasis-pacs-connector.war /docker-entrypoint.d/deployments
  ---> b0f94489c0cb
 Successfully built b0f94489c0cb
-Successfully tagged dcm4chee-arc-psql-with-weasis-pacs-connector:5.34.3
+Successfully tagged dcm4chee-arc-mysql-with-weasis-pacs-connector:5.34.3
 ```
