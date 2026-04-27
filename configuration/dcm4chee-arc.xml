@@ -182,24 +182,22 @@
                     <security user-name="sa" password="sa"/>
                 </datasource>
                 <datasource jndi-name="java:/PacsDS" pool-name="pacsds" statistics-enabled="${wildfly.datasources.statistics-enabled:${wildfly.statistics-enabled:false}}" use-ccm="${env.WILDFLY_PACSDS_USE_CCM:true}">
-                    <connection-url>jdbc:mariadb://${env.MYSQL_HOST:db}:${env.MYSQL_PORT:3306}/${env.MYSQL_DB:pacsdb}${env.MYSQL_JDBC_PARAMS:}</connection-url>
+                    <connection-url>jdbc:mariadb://${env.MYSQL_HOST:db}:${env.MYSQL_PORT:3306}/${env.MYSQL_DB:pacsdb}?serverTimezone${env:MYSQL_TIMEZONE:UTC}</connection-url>
                     <driver>mysql</driver>
                     <pool>
                         <max-pool-size>${env.WILDFLY_PACSDS_MAX_POOL_SIZE:50}</max-pool-size>
                     </pool>
-                    <security user-name="${env.MYSQL_USER:pacs}" password="${env.MYSQL_PASSWORD:pacs}"/>
-                    <validation>
-                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"/>
-                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"/>
-                        <background-validation-millis>10000</background-validation-millis>
-                    </validation>
+                    <security>
+                        <user-name>${env.MYSQL_USER:pacs}</user-name>
+                        <password>${env.MYSQL_PASSWORD:pacs}</password>
+                    </security>
                 </datasource>
                 <drivers>
+                    <driver name="mariadb" module="org.mariadb">
+                        <driver-class>org.mariadb.jdbc.Driver</driver-class>
+                    </driver>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
-                    </driver>
-                    <driver name="mysql" module="org.mariadb">
-                        <xa-datasource-class>org.mariadb.jdbc.MariaDbDataSource</xa-datasource-class>
                     </driver>
                 </drivers>
             </datasources>
