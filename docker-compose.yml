@@ -24,27 +24,38 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /var/local/dcm4chee-arc/db:/var/lib/mysql
   db-init:
-    image: alpine:3.20
+    image: mariadb:11.4
     restart: "no"
     depends_on:
       - db
     environment:
-      MARIADB_ROOT_PASSWORD: pacsroot
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      set -e;
-      apk add --no-cache mariadb-client curl > /dev/null;
-      until mariadb-admin ping -h db -u root -p"$$MARIADB_ROOT_PASSWORD" --silent; do
-        sleep 2;
-      done;
-      TABLE_COUNT=$$(mariadb -h db -u root -p"$$MARIADB_ROOT_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pacsdb';");
-      if [ "$$TABLE_COUNT" != "0" ]; then
-        echo "Schema pacsdb ja inicializado, pulando import.";
-        exit 0;
-      fi;
-      curl -fsSL https://allclinic.com.br/dcm4che/5.34.3/create-mysql.sql -o /tmp/create-mysql.sql;
-      mariadb -h db -u root -p"$$MARIADB_ROOT_PASSWORD" < /tmp/create-mysql.sql;
-      echo "SQL remoto aplicado com sucesso .";
+      MARIADB_USER: pacs
+      MARIADB_PASSWORD: pacs
+    volumes:
+      - ./db-init/create-mysql.sql:/init/create-mysql.sql:ro
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        echo "Aguardando MariaDB ficar disponivel..."
+        RETRIES=0
+        until mariadb-admin ping -h db -u "$$MARIADB_USER" -p"$$MARIADB_PASSWORD" --silent; do
+          RETRIES=$$((RETRIES + 1))
+          if [ "$$RETRIES" -ge 120 ]; then
+            echo "Timeout aguardando MariaDB no host db:3306"
+            exit 1
+          fi
+          sleep 2
+        done
+        echo "MariaDB disponivel. Verificando schema pacsdb..."
+        TABLE_COUNT=$$(mariadb -h db -u "$$MARIADB_USER" -p"$$MARIADB_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='pacsdb';")
+        if [ "$$TABLE_COUNT" != "0" ]; then
+          echo "Schema pacsdb ja inicializado, pulando import."
+          exit 0
+        fi
+        echo "Aplicando SQL inicial em pacsdb..."
+        mariadb -h db -u "$$MARIADB_USER" -p"$$MARIADB_PASSWORD" pacsdb < /init/create-mysql.sql
+        echo "SQL inicial aplicado com sucesso."
   arc:
     image: dcm4che/dcm4chee-arc-mysql:5.34.3
     ports:
