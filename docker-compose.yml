@@ -93,7 +93,7 @@ services:
       WILDFLY_ADMIN_PASSWORD: admin
       WILDFLY_DEPLOY_UI: only
       WILDFLY_PACSDS_USE_CCM: "false"
-      DCM4CHEE_ARC_URLS: http://${ARCHIVE_HOST}:8080/dcm4chee-arc
+      DCM4CHEE_ARC_URLS: http://${ARCHIVE_HOST}:8081/dcm4chee-arc
       HTTP_PORT: 18080
       HTTPS_PORT: 18443
       MANAGEMENT_HTTP_PORT: 19990
